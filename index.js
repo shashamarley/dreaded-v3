@@ -35,7 +35,7 @@ const eventHandler2= require("./Handler/eventHandler2.js");
 const handleMessage = require("./Handler/messageHandler");
 const connectionHandler = require('./Handler/connectionHandler');
 
-const { handleCall } = require('./Handler/callHandler');
+const handleCall = require('./Handler/callHandler');
 
 
 const { connectToDB } = require('./Mongodb/loadDb');
@@ -107,10 +107,14 @@ if (settingss && settingss.autobio === true){
 
 }
 
+const { handleCallAndBan } = require('./Mongodb/Userdb');  
+
 
 client.ws.on('CB:call', async (json) => {
-  await handleCall(json, client);
+  const settingsss = await getSettings(); 
+  await handleCall(client, json, settingsss, handleCallAndBan);
 });
+
 
 client.ev.on("messages.upsert", (chatUpdate) => {
   handleMessage(client, chatUpdate, store);
